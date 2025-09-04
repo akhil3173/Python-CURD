@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.title }} - CRUD App{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        {% if item.image_url %}
+        <img src="{{ item.image_url }}" class="img-fluid rounded" alt="{{ item.title }}">
+        {% else %}
+        <div class="bg-light text-center py-5 rounded">
+            <h3 class="text-muted">No Image Available</h3>
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <h1>{{ item.title }}</h1>
+        <p class="lead">${{ "%.2f"|format(item.price) }}</p>
+        <p><strong>Category:</strong> {{ item.category }}</p>
+        <p><strong>Posted by:</strong> {{ item.author.username }}</p>
+        <p><strong>Posted on:</strong> {{ item.created_at.strftime('%B %d, %Y') }}</p>
+        {% if item.updated_at != item.created_at %}
+        <p><strong>Last updated:</strong> {{ item.updated_at.strftime('%B %d, %Y') }}</p>
+        {% endif %}
+        <hr>
+        <h4>Description</h4>
+        <p>{{ item.description }}</p>
+        
+        <div class="mt-4">
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Items</a>
+            {% if current_user.is_authenticated and current_user.id == item.user_id %}
+            <a href="{{ url_for('edit_item', item_id=item.id) }}" class="btn btn-primary">Edit</a>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if current_user.is_authenticated and current_user.id == item.user_id %}
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete "{{ item.title }}"? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('delete_item', item_id=item.id) }}" method="post">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

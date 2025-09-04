@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Search - CRUD App{% endblock %}
+
+{% block content %}
+<h1>Search Items</h1>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" action="{{ url_for('search') }}" class="row g-3">
+            <div class="col-md-6">
+                <label for="query" class="form-label">Search Term</label>
+                <input type="text" class="form-control" id="query" name="query" value="{{ query }}" placeholder="Enter keywords...">
+            </div>
+            <div class="col-md-4">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" name="category">
+                    <option value="all" {% if category == 'all' or not category %}selected{% endif %}>All Categories</option>
+                    <option value="electronics" {% if category == 'electronics' %}selected{% endif %}>Electronics</option>
+                    <option value="clothing" {% if category == 'clothing' %}selected{% endif %}>Clothing</option>
+                    <option value="books" {% if category == 'books' %}selected{% endif %}>Books</option>
+                    <option value="home" {% if category == 'home' %}selected{% endif %}>Home & Garden</option>
+                    <option value="toys" {% if category == 'toys' %}selected{% endif %}>Toys & Games</option>
+                    <option value="sports" {% if category == 'sports' %}selected{% endif %}>Sports & Outdoors</option>
+                    <option value="other" {% if category == 'other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    {% if items %}
+    {% for item in items %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            {% if item.image_url %}
+            <img src="{{ item.image_url }}" class="card-img-top" alt="{{ item.title }}">
+            {% else %}
+            <div class="card-img-top bg-light text-center py-5">No Image</div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ item.title }}</h5>
+                <p class="card-text text-truncate">{{ item.description }}</p>
+                <p class="card-text"><strong>${{ "%.2f"|format(item.price) }}</strong></p>
+                <p class="card-text"><small class="text-muted">Category: {{ item.category }}</small></p>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="{{ url_for('view_item', item_id=item.id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            {% if query or category != 'all' %}
+            No items found matching your search criteria.
+            {% else %}
+            No items available yet.
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

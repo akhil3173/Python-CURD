@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Home - CRUD App{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1>Welcome to CRUD App</h1>
+        <p class="lead">Browse all available items below</p>
+    </div>
+    {% if current_user.is_authenticated %}
+    <div class="col-auto">
+        <a href="{{ url_for('new_item') }}" class="btn btn-primary">Add New Item</a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row">
+    {% for item in items %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            {% if item.image_url %}
+            <img src="{{ item.image_url }}" class="card-img-top" alt="{{ item.title }}">
+            {% else %}
+            <div class="card-img-top bg-light text-center py-5">No Image</div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ item.title }}</h5>
+                <p class="card-text text-truncate">{{ item.description }}</p>
+                <p class="card-text"><strong>${{ "%.2f"|format(item.price) }}</strong></p>
+                <p class="card-text"><small class="text-muted">Category: {{ item.category }}</small></p>
+            </div>
+            <div class="card-footer bg-transparent">
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('view_item', item_id=item.id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+                    {% if current_user.is_authenticated and current_user.id == item.user_id %}
+                    <div>
+                        <a href="{{ url_for('edit_item', item_id=item.id) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ item.id }}">Delete</button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if current_user.is_authenticated and current_user.id == item.user_id %}
+    <!-- Delete Modal for each item -->
+    <div class="modal fade" id="deleteModal{{ item.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ item.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ item.id }}">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete "{{ item.title }}"? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{{ url_for('delete_item', item_id=item.id) }}" method="post">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">No items available yet.</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

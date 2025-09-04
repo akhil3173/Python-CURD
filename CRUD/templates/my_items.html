@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}My Items - CRUD App{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1>My Items</h1>
+        <p class="lead">Manage your posted items</p>
+    </div>
+    <div class="col-auto">
+        <a href="{{ url_for('new_item') }}" class="btn btn-primary">Add New Item</a>
+    </div>
+</div>
+
+<div class="row">
+    {% if items %}
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('view_item', item_id=item.id) }}" class="text-decoration-none">
+                                        {{ item.title }}
+                                    </a>
+                                </td>
+                                <td>{{ item.category }}</td>
+                                <td>${{ "%.2f"|format(item.price) }}</td>
+                                <td>{{ item.created_at.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('view_item', item_id=item.id) }}" class="btn btn-outline-primary">View</a>
+                                        <a href="{{ url_for('edit_item', item_id=item.id) }}" class="btn btn-outline-secondary">Edit</a>
+                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ item.id }}">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% for item in items %}
+    <!-- Delete Modal for each item -->
+    <div class="modal fade" id="deleteModal{{ item.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ item.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ item.id }}">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete "{{ item.title }}"? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{{ url_for('delete_item', item_id=item.id) }}" method="post">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            You haven't posted any items yet. <a href="{{ url_for('new_item') }}">Add your first item</a>.
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

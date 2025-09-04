@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}About - CRUD App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="text-center">About CRUD App</h1>
+            </div>
+            <div class="card-body">
+                <h3>Our Mission</h3>
+                <p>
+                    CRUD App is a demonstration project showcasing the implementation of Create, Read, Update, and Delete operations
+                    in a web application. This application was built using Python Flask and SQLAlchemy to provide a robust backend
+                    with a simple and intuitive user interface.
+                </p>
+                
+                <h3>Features</h3>
+                <ul>
+                    <li>User authentication and account management</li>
+                    <li>Create, view, edit, and delete items</li>
+                    <li>Search functionality with category filtering</li>
+                    <li>Responsive design for desktop and mobile devices</li>
+                    <li>Secure password handling and data storage</li>
+                </ul>
+                
+                <h3>Technologies Used</h3>
+                <ul>
+                    <li><strong>Backend:</strong> Python, Flask, SQLAlchemy</li>
+                    <li><strong>Frontend:</strong> HTML, CSS, Bootstrap 5, JavaScript</li>
+                    <li><strong>Database:</strong> SQLite (development), can be configured for other databases</li>
+                    <li><strong>Authentication:</strong> Flask-Login, Werkzeug security</li>
+                </ul>
+                
+                <h3>Project Purpose</h3>
+                <p>
+                    This project was created to demonstrate proficiency in web development, focusing on business logic
+                    implementation rather than complex UI design. It serves as a template for understanding how to build
+                    full-stack web applications with proper separation of concerns and modern development practices.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
